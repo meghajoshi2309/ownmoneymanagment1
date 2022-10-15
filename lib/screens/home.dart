@@ -2,9 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ownmoneymanagment1/model/user_model.dart';
+import 'package:ownmoneymanagment1/screens/login.dart';
 import './expence.dart';
 import './income.dart';
-import 'dart:async';
+import './chart.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,6 +21,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
+
+  final _auth = FirebaseAuth.instance;
+
   num? income = 0;
   num? expence = 0;
   num? total = 0;
@@ -28,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final CollectionReference _transaction =
       FirebaseFirestore.instance.collection('transaction');
 
-  // Timer _timer = Timer(Duration(seconds: 200), () => print('done'));
 
   @override
   void initState() {
@@ -38,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .doc(user!.uid)
         .get()
         .then((value) {
-      this.loggedInUser = UserModel.fromMap(value.data());
+      loggedInUser = UserModel.fromMap(value.data());
       setState(() {});
     });
   }
@@ -50,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
       child: Text(
         "Welcome ${loggedInUser.username}",
-        style: TextStyle(fontSize: 15, decoration: TextDecoration.underline),
+        style: const TextStyle(fontSize: 15, decoration: TextDecoration.underline),
       ),
     );
 
@@ -58,14 +61,14 @@ class _HomeScreenState extends State<HomeScreen> {
     final yearfilter = DropdownButton(
       borderRadius: BorderRadius.circular(50),
       hint: SelectedvalueInYear == null
-          ? Text("Select Date")
+          ? const Text("Select Date")
           : Text(SelectedvalueInYear),
       items: <String>['Date', 'Month', 'Year'].map((String value) {
         return DropdownMenuItem<String>(
+          value: value,
           child: Text(
             value,
           ),
-          value: value,
         );
       }).toList(),
       onChanged: (String? newValue) {
@@ -79,14 +82,14 @@ class _HomeScreenState extends State<HomeScreen> {
     final paymentmodefilter = DropdownButton(
       borderRadius: BorderRadius.circular(50),
       hint: SelectedvalueInPaymentMode == null
-          ? Text("Select Payment Mode")
+          ? const Text("Select Payment Mode")
           : Text(SelectedvalueInPaymentMode),
       items: <String>['Cash', 'online'].map((String value) {
         return DropdownMenuItem<String>(
+          value: value,
           child: Text(
             value,
           ),
-          value: value,
         );
       }).toList(),
       onChanged: (String? newValue) {
@@ -101,15 +104,15 @@ class _HomeScreenState extends State<HomeScreen> {
       borderRadius: BorderRadius.circular(50),
       // borderRadiuscolor: Colors.black ,
       hint: SelectedvalueInCategoryMode == null
-          ? Text("Select Category")
+          ? const Text("Select Category")
           : Text(SelectedvalueInCategoryMode),
       // value: Selectedvalue,
       items: <String>['Food', 'Shopping'].map((String value) {
         return DropdownMenuItem<String>(
+          value: value,
           child: Text(
             value,
           ),
-          value: value,
         );
       }).toList(),
       onChanged: (String? newValue) {
@@ -123,9 +126,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final netBalanceCard = Container(
       //giving 90% of all the width
       width: MediaQuery.of(context).size.width * 0.9,
-      margin: EdgeInsets.all(12.0),
+      margin: const EdgeInsets.all(12.0),
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           // color: Color.fromARGB(255, 207, 121, 222),
           gradient: LinearGradient(
             begin: Alignment.topRight,
@@ -140,29 +143,29 @@ class _HomeScreenState extends State<HomeScreen> {
             Radius.circular(24.0),
           ),
         ),
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           vertical: 20.0,
           horizontal: 8.0,
         ),
         child: Column(
           children: [
-            Text(
+            const Text(
               "Total Balance",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 22.0, color: Colors.white),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               total.toString(),
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 22.0,
                   color: Colors.white,
                   fontWeight: FontWeight.w700),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -219,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
               //   total = income! - expence!;
               // }
               print("documentSnapshot['uid'] == user!.uid44");
-              return SizedBox(height: 0);
+              return const SizedBox(height: 0);
             },
             //),
 
@@ -227,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
         print("documentSnapshot['uid'] == user!.uid55");
-        return SizedBox(height: 0);
+        return const SizedBox(height: 0);
       },
     );
 
@@ -256,9 +259,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               } else {
                 return Container(
-                  child: Card(
+                  child: const Card(
                     color: Colors.red,
-                    margin: const EdgeInsets.all(10),
+                    margin: EdgeInsets.all(10),
                     child: ListTile(
                       title: Text('abc'),
                       subtitle: Text('xyz'),
@@ -270,12 +273,45 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
         print("documentSnapshot['uid'] == user!.uid55");
-        return SizedBox(height: 0);
+        return const SizedBox(height: 0);
       },
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text("Own Money Management")),
+      appBar: AppBar(
+        title: const Text("Own Money Management"),
+        actions: [
+          //list if widget in appbar actions
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              const PopupMenuItem<int>(
+                value: 0,
+                child: Text("My Profile"),
+              ),
+              const PopupMenuItem<int>(
+                value: 1,
+                child: Text("View Chart"),
+              ),
+              PopupMenuItem<int>(
+                value: 2,
+                child: Row(
+                  children: const [
+                    Icon(
+                      Icons.logout,
+                      color: Colors.black,
+                    ),
+                    SizedBox(
+                      width: 7,
+                    ),
+                    Text("Logout")
+                  ],
+                ),
+              ),
+            ],
+            onSelected: (item) => {SelectedItem(context, item)},
+          ),
+        ],
+      ),
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -286,19 +322,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  //incomeExpanceCount,
+                  incomeExpanceCount,
                   welcomeMessage,
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: <Widget>[
                         yearfilter,
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         categoryfilter,
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         paymentmodefilter,
                         // SizedBox(height: 500)
                       ],
@@ -346,10 +382,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AddIncome()),
+                    MaterialPageRoute(builder: (context) => const AddIncome()),
                   );
                 },
-                label: Text("Cash In"),
+                label: const Text("Cash In"),
                 icon: const Icon(Icons.add),
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.green[700]),
@@ -363,10 +399,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AddExpence()),
+                    MaterialPageRoute(builder: (context) => const AddExpence()),
                   );
                 },
-                label: Text("Cash Out"),
+                label: const Text("Cash Out"),
                 icon: const Icon(Icons.remove),
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.red[700]),
@@ -387,18 +423,18 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
           ),
-          padding: EdgeInsets.all(6.0),
+          padding: const EdgeInsets.all(6.0),
+          margin: const EdgeInsets.only(right: 8.0),
           child: Icon(
             Icons.arrow_downward,
             size: 28.0,
             color: Colors.green[700],
           ),
-          margin: EdgeInsets.only(right: 8.0),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               "Income",
               style: TextStyle(
                 fontSize: 14.0,
@@ -407,7 +443,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Text(
               value,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 22.0,
                   color: Colors.white,
                   fontWeight: FontWeight.w700),
@@ -426,18 +462,18 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
           ),
-          padding: EdgeInsets.all(6.0),
+          padding: const EdgeInsets.all(6.0),
+          margin: const EdgeInsets.only(right: 8.0),
           child: Icon(
             Icons.arrow_upward,
             size: 28.0,
             color: Colors.red[700],
           ),
-          margin: EdgeInsets.only(right: 8.0),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               "Expence",
               style: TextStyle(
                 fontSize: 14.0,
@@ -446,7 +482,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Text(
               value,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 22.0,
                   color: Colors.white,
                   fontWeight: FontWeight.w700),
@@ -455,5 +491,27 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ],
     );
+  }
+
+  void SelectedItem(BuildContext context, item) {
+    switch (item) {
+      case 0:
+        print("Settings");
+        // Navigator.of(context)
+        //     .push(MaterialPageRoute(builder: (context) => SettingPage()));
+        break;
+      case 1:
+        // print("Privacy Clicked");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ChartScreen()),
+        );
+        break;
+      case 2:
+        _auth.signOut();
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+        break;
+    }
   }
 }

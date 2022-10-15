@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ownmoneymanagment1/model/tranc_model.dart';
 import 'package:ownmoneymanagment1/model/transaction_model.dart';
 import 'home.dart';
 
@@ -37,7 +36,7 @@ class _AddExpenceState extends State<AddExpence> {
     // Amount filed
     final amountFiled = TextFormField(
       decoration: const InputDecoration(
-        icon: const Icon(Icons.currency_rupee_sharp),
+        icon: Icon(Icons.currency_rupee_sharp),
         hintText: 'Enter Your Income Amount',
         labelText: 'Amount',
       ),
@@ -48,7 +47,7 @@ class _AddExpenceState extends State<AddExpence> {
     // Date file
     final dateFiled = TextFormField(
       decoration: const InputDecoration(
-        icon: const Icon(Icons.calendar_month),
+        icon: Icon(Icons.calendar_month),
         hintText: 'Enter Date of Cash In',
         labelText: 'Date',
       ),
@@ -80,7 +79,7 @@ class _AddExpenceState extends State<AddExpence> {
       borderRadius: BorderRadius.circular(5),
       // borderRadiuscolor: Colors.black ,
       hint: SelectedvalueInCategory == null
-          ? Text("Select Category")
+          ? const Text("Select Category")
           : Text(SelectedvalueInCategory),
       items: <String>[
         'Food',
@@ -98,8 +97,8 @@ class _AddExpenceState extends State<AddExpence> {
         'Other'
       ].map((String value) {
         return DropdownMenuItem<String>(
-          child: Text(value),
           value: value,
+          child: Text(value),
         );
       }).toList(),
       onChanged: (String? newValue) {
@@ -111,7 +110,7 @@ class _AddExpenceState extends State<AddExpence> {
 
     // Redio Filed for Online option
     final payModeListItem1 = RadioListTile(
-      title: Text("Online"),
+      title: const Text("Online"),
       value: "Online",
       groupValue: paymode,
       onChanged: (value) {
@@ -123,7 +122,7 @@ class _AddExpenceState extends State<AddExpence> {
 
     // Redio filed for cash option
     final payModeListItem2 = RadioListTile(
-      title: Text("Cash"),
+      title: const Text("Cash"),
       value: "Cash",
       groupValue: paymode,
       onChanged: (value) {
@@ -164,14 +163,14 @@ class _AddExpenceState extends State<AddExpence> {
       borderRadius: BorderRadius.circular(30),
       color: Colors.purple,
       child: MaterialButton(
-        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         //this is for setting length of login button equal to the length of input field
         minWidth: MediaQuery.of(context).size.width,
         onPressed: () {
           SaveExpenceData(int.parse(amountController.text),
               dateInputController.text, SelectedvalueInCategory, paymode);
         },
-        child: Text(
+        child: const Text(
           "Save",
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),
@@ -179,7 +178,7 @@ class _AddExpenceState extends State<AddExpence> {
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text("Own Money Management")),
+      appBar: AppBar(title: const Text("Own Money Management")),
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -191,20 +190,20 @@ class _AddExpenceState extends State<AddExpence> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text("Add Cash Out Entry",
+                  const Text("Add Cash Out Entry",
                       textAlign: TextAlign.center,
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   amountFiled,
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   dateFiled,
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   // SizedBox(width: 100),
                   categoryFiled,
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   // paymodeList
-                  Text("Payment Mode : "),
+                  const Text("Payment Mode : "),
                   payModeListItem1,
                   payModeListItem2,
 
@@ -214,9 +213,9 @@ class _AddExpenceState extends State<AddExpence> {
                   //expenseTypeFiled1,
                   //expenseTypeFiled2,
 
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   submitBtnInExpense,
-                  SizedBox(height: 250)
+                  const SizedBox(height: 250)
                 ],
               ),
             ),
@@ -234,7 +233,7 @@ class _AddExpenceState extends State<AddExpence> {
     User? user = _auth.currentUser;
     TransactionModel transactionModel = TransactionModel();
     transactionModel.uid = user?.uid;
-    Random random = new Random();
+    Random random = Random();
     transactionModel.tid = (random.nextInt(3000)).toString();
     transactionModel.amount = amount;
     transactionModel.date = date;
@@ -250,7 +249,7 @@ class _AddExpenceState extends State<AddExpence> {
 
     Navigator.pushAndRemoveUntil(
         (context),
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
         (route) => false);
   }
 }
