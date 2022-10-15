@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "750244478486",
+    "project_id": "moneymanagement-85ca2",
+    "storage_bucket": "moneymanagement-85ca2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:750244478486:android:5211db42a2e92a648c3f37",
+        "android_client_info": {
+          "package_name": "com.example.ownmoneymanagment1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "750244478486-q86fubmd9pitrhgl0hdtov5e7g4latve.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ownmoneymanagment1",
+            "certificate_hash": "2ccbdd60b5f04e864600d059149912545c68e1f1"
+          }
+        },
+        {
+          "client_id": "750244478486-gvb2qurosntit07umduuqerkruvl3id4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6DGbVXd3tfAYuNUfSbWkqZj6RrKZIs-I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "750244478486-gvb2qurosntit07umduuqerkruvl3id4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
