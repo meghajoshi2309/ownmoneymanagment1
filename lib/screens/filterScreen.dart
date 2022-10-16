@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ownmoneymanagment1/screens/home.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import './tansaction_model.dart';
@@ -59,13 +60,17 @@ class _FilterScreenState extends State<FilterScreen> {
 
     // Filter For Date
     if (widget.selectedType == "YearMode") {
-      chartData.retainWhere((countryone) {
-        if (countryone.category == widget.selected) {
-          return true;
-        }
-        return false;
-        //you can add another filter conditions too
-      });
+      if (widget.selected == 'Date') {
+        String cdate = DateFormat("yyyy-MM-dd").format(DateTime.now());
+        print(cdate);
+        chartData.retainWhere((countryone) {
+          if (countryone.date == cdate) {
+            return true;
+          }
+          return false;
+          //you can add another filter conditions too
+        });
+      }
     }
 
     // Filter For Tranction Type
@@ -91,7 +96,7 @@ class _FilterScreenState extends State<FilterScreen> {
               margin: const EdgeInsets.all(10),
               child: ListTile(
                 title: Text('${chartData[index].amount.toString()}'),
-                subtitle: Text(chartData[index].category.toString()),
+                subtitle: Text(chartData[index].date.toString()),
               ),
             ),
           );
