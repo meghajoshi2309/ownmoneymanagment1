@@ -189,63 +189,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    // final incomeExpanceCount = StreamBuilder(
-    //   stream: _transaction.snapshots(),
-    //   builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-    //     //docs refers to rows in table(collection)
-    //     //print("streamSnapshot.hasData12345");
-    //     // print(streamSnapshot.hasData);
-    //     if (streamSnapshot.hasData) {
-    //       //print("documentSnapshot['uid'] == user!.uid12");
-
-    //       //Container(
-    //       // child: Text("abc"),
-    //       //child:
-
-    //       //print(streamSnapshot.data!.docs.length);
-    //       // print(context);
-    //       ListView.builder(
-    //         itemCount: streamSnapshot.data!.docs.length,
-    //         itemBuilder: (BuildContext context, int index) {
-    //           //print("documentSnapshot['uid'] == user!.uid22");
-    //           final DocumentSnapshot documentSnapshot =
-    //               streamSnapshot.data!.docs[index];
-    //           //print("documentSnapshot['uid'] == user!.uid");
-    //           // print(documentSnapshot['uid'] == user!.uid);
-    //           if (documentSnapshot['uid'] == user!.uid) {
-    //             if (documentSnapshot['transactiontype'] == 'Income') {
-    //               if (income != null) {
-    //                 income = income! + documentSnapshot['amount'];
-    //               } else {
-    //                 income = num.parse(documentSnapshot['amount']);
-    //               }
-    //             }
-    //             //print('income....');
-    //             // if (documentSnapshot['transactiontype'] == 'Expence') {
-    //             //   print("Expence....");
-    //             //   if (expence != null) {
-    //             //     expence = expence! + documentSnapshot['amount'];
-    //             //   } else {
-    //             //     expence = num.parse(documentSnapshot['amount']);
-    //             //   }
-    //             // }
-    //           }
-    //           // if (total != null) {
-    //           //   total = income! - expence!;
-    //           // }
-    //           // print("documentSnapshot['uid'] == user!.uid44");
-    //           return const SizedBox(height: 0);
-    //         },
-    //         //),
-
-    //         // return SizedBox(height: 0);
-    //       );
-    //     }
-    //     //print("documentSnapshot['uid'] == user!.uid55");
-    //     return const SizedBox(height: 0);
-    //   },
-    // );
-
     final cards = StreamBuilder(
       stream: _transaction.snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
@@ -392,27 +335,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     child: cards,
                   ),
-                  // FutureBuilder(
-                  //   future: Future.delayed(Duration(milliseconds: 2000)),
-                  //   builder: (context, snapshot) {
-                  //     // Checks whether the future is resolved, ie the duration is over
-                  //     if (snapshot.connectionState == ConnectionState.done)
-                  //       return netBalanceCard;
-                  //     else
-                  //       return netBalanceCard; // Return empty container to avoid build errors
-                  //   },
-                  // ),
-
-                  // FutureBuilder(
-                  //   future: Future.delayed(Duration(milliseconds: 2000)),
-                  //   builder: (context, snapshot) {
-                  //     // Checks whether the future is resolved, ie the duration is over
-                  //     if (snapshot.connectionState == ConnectionState.done)
-                  //       return cards;
-                  //     else
-                  //       return cards; // Return empty container to avoid build errors
-                  //   },
-                  // ),
                 ],
               ),
             ),

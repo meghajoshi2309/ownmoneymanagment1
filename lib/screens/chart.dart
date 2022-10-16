@@ -21,64 +21,9 @@ class ChartScreen extends StatefulWidget {
 }
 
 class _ChartScreenState extends State<ChartScreen> {
-  // User? user = FirebaseAuth.instance.currentUser;
-  // final _auth = FirebaseAuth.instance;
+  
 
-  final List<GDPData> chartData = [
-    // GDPData('abc', 1200),
-    // GDPData('123', 1280),
-    // GDPData('424', 1270),
-    // GDPData('abc13', 1260),
-    // GDPData('abc33', 1200),
-    // GDPData('ab3', 100),
-  ];
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
-
-  // final cards = StreamBuilder(
-  //   stream: FirebaseFirestore.instance.collection('transaction').snapshots(),
-  //   builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-  //     //docs refers to rows in table(collection)
-  //     if (streamSnapshot.hasData) {
-  //       return ListView.builder(
-  //         shrinkWrap: true,
-  //         itemCount: streamSnapshot.data!.docs.length,
-  //         itemBuilder: (context, index) {
-  //           final DocumentSnapshot documentSnapshot =
-  //               streamSnapshot.data!.docs[index];
-  //           if (documentSnapshot['uid'] ==
-  //               FirebaseAuth.instance.currentUser!.uid) {
-  //             GDPData temp = new GDPData(documentSnapshot['category'].toString(),
-  //                 documentSnapshot['amount']);
-  //             chartData.add(temp);
-  //             // return Container(
-  //             //   child: Card(
-  //             //     color: Colors.red,
-  //             //     margin: const EdgeInsets.all(10),
-  //             //     child: ListTile(
-  //             //       title: Text(documentSnapshot['amount'].toString()),
-  //             //       subtitle: Text(documentSnapshot['transactiontype']),
-  //             //     ),
-  //             //   ),
-  //             // );
-  //           } else {
-  //             return SizedBox(
-  //               height: 0,
-  //             );
-  //           }
-  //           return SizedBox(
-  //             height: 0,
-  //           );
-  //         },
-  //       );
-  //     }
-  //     print("documentSnapshot['uid'] == user!.uid55");
-  //     return const SizedBox(height: 0);
-  //   },
-  // );
+  final List<GDPData> chartData = [ ];
 
   @override
   Widget build(BuildContext context) {

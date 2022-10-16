@@ -26,5 +26,3 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
-// Divider() this is for line 

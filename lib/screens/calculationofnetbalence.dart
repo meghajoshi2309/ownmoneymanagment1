@@ -64,18 +64,7 @@ class _netBalanceState extends State<netBalance> {
                           if (total != null) {
                             total = income - expence;
                           }
-
-                          return Container(
-                            child: Card(
-                              color: Colors.white,
-                              margin: const EdgeInsets.all(10),
-                              child: ListTile(
-                                title:
-                                    Text(documentSnapshot['amount'].toString()),
-                                subtitle: Text(total.toString()),
-                              ),
-                            ),
-                          );
+                          return SizedBox(height: 0);
                         } else {
                           return SizedBox(height: 0);
                         }
