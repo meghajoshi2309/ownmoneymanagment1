@@ -22,7 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Own Money Managment")),
+      appBar: AppBar(title: const Text("Bar Chart")),
       body: Center(
         child: Container(
           // child: Row(

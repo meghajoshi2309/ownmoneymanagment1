@@ -4,7 +4,8 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ChartScreen extends StatefulWidget {
   final List<ChartClassData> text;
-  const ChartScreen({Key? key, required this.text}) : super(key: key);
+  final String title ;
+  const ChartScreen({Key? key, required this.text , required this.title}) : super(key: key);
 
   @override
   State<ChartScreen> createState() => _ChartScreenState();
@@ -15,7 +16,7 @@ class _ChartScreenState extends State<ChartScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: const Text("Own Money Managment")),
+        appBar: AppBar(title: Text( widget.title + " Chart")),
         body: SfCircularChart(
           legend: Legend(
               isVisible: true, overflowMode: LegendItemOverflowMode.wrap),

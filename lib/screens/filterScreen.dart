@@ -1,17 +1,9 @@
-// import 'package:flutter/src/foundation/key.dart';
-// import 'package:flutter/src/widgets/framework.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:ownmoneymanagment1/screens/home.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import './tansaction_model.dart';
-import '../model/chart_model.dart';
-import '../model/transaction_model.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+// ignore: file_names
 
-import 'package:ownmoneymanagment1/model/user_model.dart';
+import 'package:flutter/material.dart';
+
+import 'package:intl/intl.dart';
+import '../model/transaction_model.dart';
 
 class FilterScreen extends StatefulWidget {
   final List<TransactionModel> listof;
@@ -62,7 +54,7 @@ class _FilterScreenState extends State<FilterScreen> {
     if (widget.selectedType == "YearMode") {
       if (widget.selected == 'Current Date') {
         String cdate = DateFormat("yyyy-MM-dd").format(DateTime.now());
-      
+
         chartData.retainWhere((countryone) {
           if (countryone.date == cdate) {
             return true;
@@ -128,40 +120,87 @@ class _FilterScreenState extends State<FilterScreen> {
       });
     }
 
-    print(chartData);
+    var listDiplay;
 
-    var listDiplay = ListView.builder(
+    listDiplay = ListView.builder(
         shrinkWrap: true,
         itemCount: chartData.length,
         itemBuilder: (BuildContext ctxt, int index) {
           return Container(
             child: Card(
-              color: Colors.white,
-              margin: const EdgeInsets.all(10),
-              child: ListTile(
-                title: Text('${chartData[index].amount.toString()}'),
-                subtitle: Text(chartData[index].date.toString()),
-              ),
-            ),
+                color: Colors.white,
+                elevation: 5,
+                margin: const EdgeInsets.all(10),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        TextButton(
+                          child: Text(chartData[index].category.toString(),
+                              style: TextStyle(fontSize: 16)),
+                          onPressed: () {/* ... */},
+                        ),
+                        const SizedBox(width: 8),
+                        TextButton(
+                          child: Text(chartData[index].amount.toString(),
+                              style: TextStyle(fontSize: 16)),
+                          onPressed: () {/* ... */},
+                        ),
+                        // const SizedBox(width: 8),
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 2, 5, 4),
+                        ),
+                        Text(
+                            "Tranction Type : ${chartData[index].transactiontype}"),
+                        Text("Payment Mode : ${chartData[index].paymentmode}"),
+                        Divider(
+                          color: Color.fromARGB(255, 201, 201, 201),
+                        ),
+                        Text(chartData[index].date.toString(),
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 115, 105, 105))),
+                      ],
+                    )
+                  ],
+                )),
           );
         });
 
+    if (chartData.length == 0) {
+      listDiplay = Container(
+        child: Column(
+          children: const [
+            Text("There is not any Transication",
+                style: TextStyle(color: Colors.red, fontSize: 20)),
+          ],
+        ),
+      );
+    }
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text("Own Money Managment")),
+        appBar: AppBar(title: Text("Filter Transication")),
         body: Center(
           child: SingleChildScrollView(
             child: Container(
-              margin: EdgeInsets.fromLTRB(50, 30, 50, 60),
+              margin: EdgeInsets.fromLTRB(50, 23, 50, 500),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text("Own Money Managment" +
-                      chartData.length.toString() +
-                      " " +
-                      widget.selected),
-                  listDiplay
+                  Text(
+                    "Filter By " + widget.selected,
+                    style: TextStyle(fontSize: 22),
+                  ),
+                  SizedBox(height: 18),
+                  listDiplay,
                 ],
               ),
             ),

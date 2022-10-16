@@ -89,7 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     //Filter For Year
     final yearfilter = DropdownButton(
-      borderRadius: BorderRadius.circular(50),
+      // borderRadius: BorderRadius.circular(50),
+      // style: TextStyle(fontSize: 18),
       hint: SelectedvalueInYear == null
           ? const Text("Select Date")
           : Text(SelectedvalueInYear),
@@ -117,14 +118,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     selected: SelectedvalueInYear,
                     selectedType: "YearMode")),
           );
-          print("at cards temp date..");
         });
       },
     );
 
     // Filter For Payment Mode
     final paymentmodefilter = DropdownButton(
-      borderRadius: BorderRadius.circular(50),
+      // borderRadius: BorderRadius.circular(50),
+      // style: TextStyle(fontSize: 18),
       hint: SelectedvalueInPaymentMode == null
           ? const Text("Select Payment Mode")
           : Text(SelectedvalueInPaymentMode),
@@ -153,8 +154,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Filter For Category
     final categoryfilter = DropdownButton(
-      borderRadius: BorderRadius.circular(50),
+      // borderRadius: BorderRadius.circular(50),
       // borderRadiuscolor: Colors.black ,
+      // style: TextStyle(fontSize: 18),
       hint: SelectedvalueInCategoryMode == null
           ? const Text("Select Category")
           : Text(SelectedvalueInCategoryMode),
@@ -199,7 +201,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Filter For Income AND Expance
     final IEmodefilter = DropdownButton(
-      borderRadius: BorderRadius.circular(50),
+      // borderRadius: BorderRadius.circular(50),
+      // style: TextStyle(fontSize: 18),
       hint: SelectedvalueIEMode == null
           ? const Text("Entry Type")
           : Text(SelectedvalueIEMode),
@@ -293,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
         BarchartData = <BarChartData>[
           BarChartData('Today', 0, 0, 0),
           BarChartData('Pervios Day', 0, 0, 0),
-          BarChartData('2 Day AGO', 0, 0, 0),
+          BarChartData('2 Day Ago', 0, 0, 0),
         ];
         print("at cards main...");
         if (streamSnapshot.hasData) {
@@ -434,16 +437,53 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 return Container(
                   child: Card(
-                    color: Colors.white,
-                    margin: const EdgeInsets.all(10),
-                    child: ListTile(
-                      title:
-                          Text(documentSnapshot['amount']?.toString() ?? "0"),
-                      subtitle: Text(
-                          documentSnapshot['transactiontype']?.toString() ??
-                              "0"),
-                    ),
-                  ),
+                      color: Colors.white,
+                      elevation: 5,
+                      margin: const EdgeInsets.all(10),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              TextButton(
+                                child: Text(
+                                    documentSnapshot['category'].toString(),
+                                    style: TextStyle(fontSize: 16)),
+                                onPressed: () {/* ... */},
+                              ),
+                              const SizedBox(width: 8),
+                              TextButton(
+                                child: Text(
+                                    documentSnapshot['amount'].toString(),
+                                    style: TextStyle(fontSize: 16)),
+                                onPressed: () {/* ... */},
+                              ),
+                              // const SizedBox(width: 8),
+                            ],
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            // crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(10, 2, 5, 4),
+                              ),
+                              Text(
+                                  "Tranction Type : ${documentSnapshot['transactiontype']}"),
+                              Text(
+                                  "Payment Mode : ${documentSnapshot['paymentmode']}"),
+                              Divider(
+                                color: Color.fromARGB(255, 201, 201, 201),
+                              ),
+                              Text(documentSnapshot['date'].toString(),
+                                  style: TextStyle(
+                                      color:
+                                          Color.fromARGB(255, 115, 105, 105))),
+                            ],
+                          )
+                        ],
+                      )),
                 );
               } else {
                 return SizedBox(height: 0);
@@ -469,7 +509,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ChartScreen(text: chartData)),
+                builder: (context) =>
+                    ChartScreen(text: chartData, title: "Expance")),
           );
           break;
         case 2:
@@ -482,7 +523,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ChartScreen(text: chartDataForIncome)),
+                builder: (context) =>
+                    ChartScreen(text: chartDataForIncome, title: "Income")),
           );
           break;
 
