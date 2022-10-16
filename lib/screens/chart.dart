@@ -175,6 +175,7 @@ class _ChartScreenState extends State<ChartScreen> {
 
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(title: Text("Own Money Managment")),
         body: SfCircularChart(
           legend: Legend(
               isVisible: true, overflowMode: LegendItemOverflowMode.wrap),

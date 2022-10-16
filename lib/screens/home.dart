@@ -30,14 +30,11 @@ class _HomeScreenState extends State<HomeScreen> {
   num? total = 0;
   // income = 0;
   //we can accsess table(collection) transaction using _transaction instance
-
   final CollectionReference _transaction =
       FirebaseFirestore.instance.collection('transaction');
 
   final List<ChartClassData> chartData = [
-    ChartClassData("abc", 124),
-    ChartClassData("abc1", 14),
-    ChartClassData("abc2", 100)
+    // ChartClassData("abc", 124),
   ];
 
   @override
@@ -248,7 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
       stream: _transaction.snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
         //docs refers to rows in table(collection)
-
+        chartData.clear();
         if (streamSnapshot.hasData) {
           return ListView.builder(
             shrinkWrap: true,
@@ -257,9 +254,24 @@ class _HomeScreenState extends State<HomeScreen> {
               final DocumentSnapshot documentSnapshot =
                   streamSnapshot.data!.docs[index];
               if (documentSnapshot['uid'] == user!.uid) {
-                chartData.add(ChartClassData(
-                    documentSnapshot['category'].toString(),
-                    documentSnapshot['amount']));
+                if (documentSnapshot['transactiontype'] == 'Expence') {
+                  for (int i = 0; i < chartData.length; i++) {
+                    if (chartData[i].category == documentSnapshot['category']) {
+                      int temp = chartData[i].amount;
+                      temp += int.parse(documentSnapshot['amount']);
+                      chartData.removeAt(i);
+                      chartData.insert(
+                        i,
+                        ChartClassData(
+                            documentSnapshot['category'].toString(), temp),
+                      );
+                    }
+                  }
+                  chartData.add(ChartClassData(
+                      documentSnapshot['category'].toString(),
+                      documentSnapshot['amount']));
+                }
+                print(chartData);
                 return Container(
                   child: Card(
                     color: Colors.white,
