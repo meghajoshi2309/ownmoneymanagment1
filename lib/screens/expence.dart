@@ -8,7 +8,15 @@ import 'package:ownmoneymanagment1/model/transaction_model.dart';
 import 'home.dart';
 
 class AddExpence extends StatefulWidget {
-  const AddExpence({Key? key}) : super(key: key);
+  final num income;
+  final num expence;
+  final num total;
+  const AddExpence(
+      {Key? key,
+      required this.income,
+      required this.expence,
+      required this.total})
+      : super(key: key);
 
   @override
   State<AddExpence> createState() => _AddExpenceState();
@@ -230,6 +238,8 @@ class _AddExpenceState extends State<AddExpence> {
       num amount, String date, String category, String? paymode) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     var tid;
+    var newexpence = widget.expence + amount;
+    var newTotal = widget.total - amount;
     User? user = _auth.currentUser;
     TransactionModel transactionModel = TransactionModel();
     transactionModel.uid = user?.uid;
@@ -249,7 +259,9 @@ class _AddExpenceState extends State<AddExpence> {
 
     Navigator.pushAndRemoveUntil(
         (context),
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(
+            builder: (context) => HomeScreen(
+                income: widget.income, expence: newexpence, total: newTotal)),
         (route) => false);
   }
 }

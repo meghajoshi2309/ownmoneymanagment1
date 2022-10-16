@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ownmoneymanagment1/screens/calculationofnetbalence.dart';
 import 'package:ownmoneymanagment1/screens/registration.dart';
 import './registration.dart';
 import './home.dart';
@@ -147,7 +149,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const RegistrationScreen()),
+                                  builder: (context) =>
+                                      const RegistrationScreen()),
                             );
                           },
                           child: const Text(
@@ -178,8 +181,8 @@ class _LoginScreenState extends State<LoginScreen> {
           .signInWithEmailAndPassword(email: email, password: password)
           .then((uid) => {
                 Fluttertoast.showToast(msg: "Login Successful"),
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const HomeScreen())),
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const netBalance())),
               })
           .catchError((e) {
         Fluttertoast.showToast(msg: e!.message);
