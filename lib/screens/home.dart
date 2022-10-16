@@ -79,7 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
       hint: SelectedvalueInYear == null
           ? const Text("Select Date")
           : Text(SelectedvalueInYear),
-      items: <String>['Date', 'Month', 'Year'].map((String value) {
+      items: <String>['Current Date', 'Current Month', 'Current Year', 'Pervious Date']
+          .map((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(

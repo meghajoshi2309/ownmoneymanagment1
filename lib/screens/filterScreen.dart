@@ -60,11 +60,55 @@ class _FilterScreenState extends State<FilterScreen> {
 
     // Filter For Date
     if (widget.selectedType == "YearMode") {
-      if (widget.selected == 'Date') {
+      if (widget.selected == 'Current Date') {
         String cdate = DateFormat("yyyy-MM-dd").format(DateTime.now());
         print(cdate);
         chartData.retainWhere((countryone) {
           if (countryone.date == cdate) {
+            return true;
+          }
+          return false;
+          //you can add another filter conditions too
+        });
+      }
+
+      if (widget.selected == 'Pervious Date') {
+        DateTime pdate = DateTime.now().subtract(Duration(days: 1));
+        String tempdate = DateFormat("yyyy-MM-dd").format(pdate);
+        chartData.retainWhere((countryone) {
+          if (countryone.date == tempdate) {
+            return true;
+          }
+          return false;
+          //you can add another filter conditions too
+        });
+      }
+
+      if (widget.selected == 'Current Month') {
+        String cdate = DateFormat("yyyy-MM-dd").format(DateTime.now());
+        var dt = DateTime.now();
+        var cmp = dt.month;
+        print(cdate);
+        chartData.retainWhere((countryone) {
+          var temp1 = countryone.date;
+          var tempdate = DateFormat("yyyy-MM-dd").parse(temp1!);
+          if (tempdate.month == cmp) {
+            return true;
+          }
+          return false;
+          //you can add another filter conditions too
+        });
+      }
+
+      if (widget.selected == 'Current Year') {
+        String cdate = DateFormat("yyyy-MM-dd").format(DateTime.now());
+        var dt = DateTime.now();
+        var cmp = dt.year;
+        print(cdate);
+        chartData.retainWhere((countryone) {
+          var temp1 = countryone.date;
+          var tempdate = DateFormat("yyyy-MM-dd").parse(temp1!);
+          if (tempdate.year == cmp) {
             return true;
           }
           return false;
