@@ -255,7 +255,7 @@ class _AddExpenceState extends State<AddExpence> {
         .collection("transaction")
         .doc(transactionModel.tid)
         .set(transactionModel.toMap());
-    Fluttertoast.showToast(msg: "Income Added Successfully :) ");
+    Fluttertoast.showToast(msg: "Expence Added Successfully :) ");
 
     Navigator.pushAndRemoveUntil(
         (context),

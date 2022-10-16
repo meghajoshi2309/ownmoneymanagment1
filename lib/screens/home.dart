@@ -5,6 +5,7 @@ import 'package:ownmoneymanagment1/model/user_model.dart';
 import 'package:ownmoneymanagment1/screens/filterScreen.dart';
 import 'package:ownmoneymanagment1/screens/login.dart';
 import 'package:ownmoneymanagment1/screens/profile.dart';
+import 'package:ownmoneymanagment1/screens/staticbarchart.dart';
 import '../model/chart_model.dart';
 import '../model/transaction_model.dart';
 import './expence.dart';
@@ -42,9 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final CollectionReference _transaction =
       FirebaseFirestore.instance.collection('transaction');
 
-  final List<ChartClassData> chartData = [
-    // ChartClassData("abc", 124),
-  ];
+  final List<ChartClassData> chartData = [];
+  final List<ChartClassData> chartDataForIncome = [];
 
   @override
   void initState() {
@@ -64,14 +64,14 @@ class _HomeScreenState extends State<HomeScreen> {
     var cards;
 
     //Welcome Message
-    final welcomeMessage = Padding(
-      padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-      child: Text(
-        "Welcome ${loggedInUser.username}",
-        style:
-            const TextStyle(fontSize: 15, decoration: TextDecoration.underline),
-      ),
-    );
+    // final welcomeMessage = Padding(
+    //   padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+    //   child: Text(
+    //     "Welcome ${loggedInUser.username}",
+    //     style:
+    //         const TextStyle(fontSize: 15, decoration: TextDecoration.underline),
+    //   ),
+    // );
 
     //Filter For Year
     final yearfilter = DropdownButton(
@@ -79,8 +79,12 @@ class _HomeScreenState extends State<HomeScreen> {
       hint: SelectedvalueInYear == null
           ? const Text("Select Date")
           : Text(SelectedvalueInYear),
-      items: <String>['Current Date', 'Current Month', 'Current Year', 'Pervious Date']
-          .map((String value) {
+      items: <String>[
+        'Current Date',
+        'Current Month',
+        'Current Year',
+        'Pervious Date'
+      ].map((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(
@@ -271,6 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
         //docs refers to rows in table(collection)
         chartData.clear();
         listof.clear();
+        chartDataForIncome.clear();
         print("at cards main...");
         if (streamSnapshot.hasData) {
           return ListView.builder(
@@ -282,10 +287,12 @@ class _HomeScreenState extends State<HomeScreen> {
               if (documentSnapshot['uid'] == user!.uid) {
                 //Adding Data in chartData List For Making Chart Of Expence In Chart.dart
                 if (documentSnapshot['transactiontype'] == 'Expence') {
+                  var flag = 0;
                   for (int i = 0; i < chartData.length; i++) {
                     if (chartData[i].category == documentSnapshot['category']) {
+                      flag = 1;
                       int temp = chartData[i].amount;
-                      temp += int.parse(documentSnapshot['amount']);
+                      temp += int.parse(documentSnapshot['amount'].toString());
                       chartData.removeAt(i);
                       chartData.insert(
                         i,
@@ -294,11 +301,33 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     }
                   }
-                  chartData.add(ChartClassData(
-                      documentSnapshot['category'].toString(),
-                      documentSnapshot['amount']));
+                  if (flag == 0)
+                    chartData.add(ChartClassData(
+                        documentSnapshot['category'].toString(),
+                        documentSnapshot['amount']));
                 }
-                print("above trans temp");
+
+                if (documentSnapshot['transactiontype'] == 'Income') {
+                  var flag = 0;
+                  for (int i = 0; i < chartDataForIncome.length; i++) {
+                    if (chartDataForIncome[i].category ==
+                        documentSnapshot['category']) {
+                      flag = 1;
+                      int temp = chartDataForIncome[i].amount;
+                      temp += int.parse(documentSnapshot['amount'].toString());
+                      chartDataForIncome.removeAt(i);
+                      chartDataForIncome.insert(
+                        i,
+                        ChartClassData(
+                            documentSnapshot['category'].toString(), temp),
+                      );
+                    }
+                  }
+                  if (flag == 0)
+                    chartDataForIncome.add(ChartClassData(
+                        documentSnapshot['category'].toString(),
+                        documentSnapshot['amount']));
+                }
 
                 TransactionModel temp = TransactionModel(
                     uid: user!.uid,
@@ -309,16 +338,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     paymentmode: documentSnapshot['paymentmode'],
                     transactiontype: documentSnapshot['transactiontype']);
 
-                print("below trans temp");
                 listof.add(temp);
-                print(chartData);
                 return Container(
                   child: Card(
                     color: Colors.white,
                     margin: const EdgeInsets.all(10),
                     child: ListTile(
-                      title: Text(
-                          '${documentSnapshot['amount']?.toString() ?? "0"}'),
+                      title:
+                          Text(documentSnapshot['amount']?.toString() ?? "0"),
                       subtitle: Text(
                           documentSnapshot['transactiontype']?.toString() ??
                               "0"),
@@ -357,6 +384,21 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const LoginScreen()));
           break;
+
+        case 3:
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ChartScreen(text: chartDataForIncome)),
+          );
+          break;
+
+        case 4:
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MyHomePage()),
+          );
+          break;
       }
     }
 
@@ -373,7 +415,15 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const PopupMenuItem<int>(
                 value: 1,
-                child: Text("View Chart"),
+                child: Text("Expence Chart"),
+              ),
+              const PopupMenuItem<int>(
+                value: 3,
+                child: Text("Income Chart"),
+              ),
+              const PopupMenuItem<int>(
+                value: 4,
+                child: Text("Bar Chart"),
               ),
               PopupMenuItem<int>(
                 value: 2,
@@ -406,10 +456,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   const SizedBox(
-                    height: 20,
+                    height: 0,
                   ),
                   //incomeExpanceCount,
-                  welcomeMessage,
+                  // welcomeMessage,
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -425,9 +475,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                  netBalanceCard,
-                  Container(
-                    child: cards,
+                  // netBalanceCard,
+                  SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      children: <Widget>[
+                        netBalanceCard,
+                        cards,
+                        SizedBox(
+                          height: 40,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

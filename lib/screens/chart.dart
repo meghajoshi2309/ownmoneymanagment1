@@ -21,14 +21,10 @@ class ChartScreen extends StatefulWidget {
 }
 
 class _ChartScreenState extends State<ChartScreen> {
-  
-
-  final List<GDPData> chartData = [ ];
+  final List<GDPData> chartData = [];
 
   @override
   Widget build(BuildContext context) {
-    print("Helllo");
-
     final cards = StreamBuilder(
       stream: FirebaseFirestore.instance.collection('transaction').snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
@@ -63,6 +59,7 @@ class _ChartScreenState extends State<ChartScreen> {
         return const SizedBox(height: 0);
       },
     );
+
     // final cards = StreamBuilder(
     //   stream: FirebaseFirestore.instance.collection('transaction').snapshots(),
     //   builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {

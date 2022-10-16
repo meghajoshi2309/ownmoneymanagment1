@@ -85,7 +85,7 @@ class _netBalanceState extends State<netBalance> {
             ),
             FlatButton(
               child: Text(
-                'LogIn',
+                'Skip',
                 style: TextStyle(fontSize: 20.0),
               ),
               color: Colors.blueAccent,
