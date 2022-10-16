@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ownmoneymanagment1/model/user_model.dart';
+import 'package:ownmoneymanagment1/screens/filterScreen.dart';
 import 'package:ownmoneymanagment1/screens/login.dart';
 import 'package:ownmoneymanagment1/screens/profile.dart';
 import '../model/chart_model.dart';
+import '../model/transaction_model.dart';
 import './expence.dart';
 import './income.dart';
 import './chart.dart';
@@ -26,15 +28,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String SelectedvalueInYear = "Select Date";
-  String SelectedvalueInPaymentMode = "Select payment mode ";
+  String SelectedvalueInPaymentMode = "Select Payment Mode ";
   String SelectedvalueInCategoryMode = "Select Category";
+  String SelectedvalueIEMode = "Entry Type ";
 
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
 
   final _auth = FirebaseAuth.instance;
+  List<TransactionModel> listof = [];
 
-  // income = 0;
   //we can accsess table(collection) transaction using _transaction instance
   final CollectionReference _transaction =
       FirebaseFirestore.instance.collection('transaction');
@@ -58,9 +61,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //Welcome Message
     var cards;
-    var flag = 0;
+
+    //Welcome Message
     final welcomeMessage = Padding(
       padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
       child: Text(
@@ -87,9 +90,15 @@ class _HomeScreenState extends State<HomeScreen> {
       onChanged: (String? newValue) {
         setState(() {
           SelectedvalueInYear = newValue!;
-          cards = Text("HO");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => FilterScreen(
+                    listof: listof,
+                    selected: SelectedvalueInYear,
+                    selectedType: "YearMode")),
+          );
           print("at cards temp date..");
-          flag = 1;
         });
       },
     );
@@ -100,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
       hint: SelectedvalueInPaymentMode == null
           ? const Text("Select Payment Mode")
           : Text(SelectedvalueInPaymentMode),
-      items: <String>['Cash', 'online'].map((String value) {
+      items: <String>['Cash', 'Online'].map((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(
@@ -111,6 +120,14 @@ class _HomeScreenState extends State<HomeScreen> {
       onChanged: (String? newValue) {
         setState(() {
           SelectedvalueInPaymentMode = newValue!;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => FilterScreen(
+                    listof: listof,
+                    selected: SelectedvalueInPaymentMode,
+                    selectedType: 'PaymentMode')),
+          );
         });
       },
     );
@@ -123,7 +140,22 @@ class _HomeScreenState extends State<HomeScreen> {
           ? const Text("Select Category")
           : Text(SelectedvalueInCategoryMode),
       // value: Selectedvalue,
-      items: <String>['Food', 'Shopping'].map((String value) {
+      items: <String>[
+        'Food',
+        'Vehical',
+        'Shopping',
+        'Clothes',
+        'Kids',
+        'Gifts',
+        'Fuel',
+        'Holidays',
+        'Travel',
+        'General',
+        'Entertainment',
+        'Sports',
+        'Salary',
+        'Invertment Income'
+      ].map((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(
@@ -134,6 +166,43 @@ class _HomeScreenState extends State<HomeScreen> {
       onChanged: (String? newValue) {
         setState(() {
           SelectedvalueInCategoryMode = newValue!;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => FilterScreen(
+                    listof: listof,
+                    selected: SelectedvalueInCategoryMode,
+                    selectedType: "CategoryMode")),
+          );
+        });
+      },
+    );
+
+    // Filter For Income AND Expance
+    final IEmodefilter = DropdownButton(
+      borderRadius: BorderRadius.circular(50),
+      hint: SelectedvalueIEMode == null
+          ? const Text("Entry Type")
+          : Text(SelectedvalueIEMode),
+      items: <String>['Income', 'Expence'].map((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(
+            value,
+          ),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        setState(() {
+          SelectedvalueIEMode = newValue!;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => FilterScreen(
+                    listof: listof,
+                    selected: SelectedvalueIEMode,
+                    selectedType: 'EntryTypeMode')),
+          );
         });
       },
     );
@@ -200,8 +269,9 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
         //docs refers to rows in table(collection)
         chartData.clear();
+        listof.clear();
         print("at cards main...");
-        if (streamSnapshot.hasData && flag == 0) {
+        if (streamSnapshot.hasData) {
           return ListView.builder(
             shrinkWrap: true,
             itemCount: streamSnapshot.data!.docs.length,
@@ -227,6 +297,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       documentSnapshot['category'].toString(),
                       documentSnapshot['amount']));
                 }
+                print("above trans temp");
+
+                TransactionModel temp = TransactionModel(
+                    uid: user!.uid,
+                    tid: documentSnapshot['tid'],
+                    amount: documentSnapshot['amount'],
+                    date: documentSnapshot['date'],
+                    category: documentSnapshot['category'],
+                    paymentmode: documentSnapshot['paymentmode'],
+                    transactiontype: documentSnapshot['transactiontype']);
+
+                print("below trans temp");
+                listof.add(temp);
                 print(chartData);
                 return Container(
                   child: Card(
@@ -257,8 +340,7 @@ class _HomeScreenState extends State<HomeScreen> {
         case 0:
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => UserProfile()),
+            MaterialPageRoute(builder: (context) => UserProfile()),
           );
           break;
         case 1:
@@ -333,9 +415,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: <Widget>[
                         yearfilter,
                         const SizedBox(width: 10),
-                        categoryfilter,
+                        IEmodefilter,
                         const SizedBox(width: 10),
                         paymentmodefilter,
+                        const SizedBox(width: 10),
+                        categoryfilter,
                         // SizedBox(height: 500)
                       ],
                     ),
