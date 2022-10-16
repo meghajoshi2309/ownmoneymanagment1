@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ownmoneymanagment1/model/user_model.dart';
 import 'package:ownmoneymanagment1/screens/login.dart';
+import '../model/chart_model.dart';
 import './expence.dart';
 import './income.dart';
 import './chart.dart';
@@ -29,9 +30,15 @@ class _HomeScreenState extends State<HomeScreen> {
   num? total = 0;
   // income = 0;
   //we can accsess table(collection) transaction using _transaction instance
+
   final CollectionReference _transaction =
       FirebaseFirestore.instance.collection('transaction');
 
+  final List<ChartClassData> chartData = [
+    ChartClassData("abc", 124),
+    ChartClassData("abc1", 14),
+    ChartClassData("abc2", 100)
+  ];
 
   @override
   void initState() {
@@ -53,7 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
       child: Text(
         "Welcome ${loggedInUser.username}",
-        style: const TextStyle(fontSize: 15, decoration: TextDecoration.underline),
+        style:
+            const TextStyle(fontSize: 15, decoration: TextDecoration.underline),
       ),
     );
 
@@ -183,23 +191,25 @@ class _HomeScreenState extends State<HomeScreen> {
       stream: _transaction.snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
         //docs refers to rows in table(collection)
-        print("streamSnapshot.hasData12345");
-        print(streamSnapshot.hasData);
+        //print("streamSnapshot.hasData12345");
+        // print(streamSnapshot.hasData);
         if (streamSnapshot.hasData) {
-          print("documentSnapshot['uid'] == user!.uid12");
+          //print("documentSnapshot['uid'] == user!.uid12");
+
           //Container(
           // child: Text("abc"),
           //child:
-          print(streamSnapshot.data!.docs.length);
-          print(context);
+
+          //print(streamSnapshot.data!.docs.length);
+          // print(context);
           ListView.builder(
             itemCount: streamSnapshot.data!.docs.length,
             itemBuilder: (BuildContext context, int index) {
-              print("documentSnapshot['uid'] == user!.uid22");
+              //print("documentSnapshot['uid'] == user!.uid22");
               final DocumentSnapshot documentSnapshot =
                   streamSnapshot.data!.docs[index];
-              print("documentSnapshot['uid'] == user!.uid");
-              print(documentSnapshot['uid'] == user!.uid);
+              //print("documentSnapshot['uid'] == user!.uid");
+              // print(documentSnapshot['uid'] == user!.uid);
               if (documentSnapshot['uid'] == user!.uid) {
                 if (documentSnapshot['transactiontype'] == 'Income') {
                   if (income != null) {
@@ -208,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     income = num.parse(documentSnapshot['amount']);
                   }
                 }
-                print('income....');
+                //print('income....');
                 // if (documentSnapshot['transactiontype'] == 'Expence') {
                 //   print("Expence....");
                 //   if (expence != null) {
@@ -221,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // if (total != null) {
               //   total = income! - expence!;
               // }
-              print("documentSnapshot['uid'] == user!.uid44");
+              // print("documentSnapshot['uid'] == user!.uid44");
               return const SizedBox(height: 0);
             },
             //),
@@ -229,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // return SizedBox(height: 0);
           );
         }
-        print("documentSnapshot['uid'] == user!.uid55");
+        //print("documentSnapshot['uid'] == user!.uid55");
         return const SizedBox(height: 0);
       },
     );
@@ -247,9 +257,12 @@ class _HomeScreenState extends State<HomeScreen> {
               final DocumentSnapshot documentSnapshot =
                   streamSnapshot.data!.docs[index];
               if (documentSnapshot['uid'] == user!.uid) {
+                chartData.add(ChartClassData(
+                    documentSnapshot['category'].toString(),
+                    documentSnapshot['amount']));
                 return Container(
                   child: Card(
-                    color: Colors.red,
+                    color: Colors.white,
                     margin: const EdgeInsets.all(10),
                     child: ListTile(
                       title: Text(documentSnapshot['amount'].toString()),
@@ -258,24 +271,38 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 );
               } else {
-                return Container(
-                  child: const Card(
-                    color: Colors.red,
-                    margin: EdgeInsets.all(10),
-                    child: ListTile(
-                      title: Text('abc'),
-                      subtitle: Text('xyz'),
-                    ),
-                  ),
-                );
+                return SizedBox(height: 0);
               }
             },
           );
         }
-        print("documentSnapshot['uid'] == user!.uid55");
+        //print("documentSnapshot['uid'] == user!.uid55");
         return const SizedBox(height: 0);
       },
     );
+
+    void SelectedItem(BuildContext context, item) {
+      switch (item) {
+        case 0:
+          print("Settings");
+          // Navigator.of(context)
+          //     .push(MaterialPageRoute(builder: (context) => SettingPage()));
+          break;
+        case 1:
+          // print("Privacy Clicked");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ChartScreen(text: chartData)),
+          );
+          break;
+        case 2:
+          _auth.signOut();
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const LoginScreen()));
+          break;
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -491,27 +518,5 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ],
     );
-  }
-
-  void SelectedItem(BuildContext context, item) {
-    switch (item) {
-      case 0:
-        print("Settings");
-        // Navigator.of(context)
-        //     .push(MaterialPageRoute(builder: (context) => SettingPage()));
-        break;
-      case 1:
-        // print("Privacy Clicked");
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ChartScreen()),
-        );
-        break;
-      case 2:
-        _auth.signOut();
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => const LoginScreen()));
-        break;
-    }
   }
 }
