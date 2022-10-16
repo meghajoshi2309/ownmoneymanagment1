@@ -29,6 +29,16 @@ class _netBalanceState extends State<netBalance> {
       body: Container(
         child: Column(
           children: [
+            IconButton(
+              icon: Icon(
+                Icons.mail_outline_sharp,
+                size: 30.0,
+              ),
+              tooltip: 'send mail me',
+              onPressed: () {
+                print('on console print');
+              },
+            ),
             StreamBuilder(
               stream: _transaction.snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ownmoneymanagment1/model/user_model.dart';
 import 'package:ownmoneymanagment1/screens/login.dart';
+import 'package:ownmoneymanagment1/screens/profile.dart';
 import '../model/chart_model.dart';
 import './expence.dart';
 import './income.dart';
@@ -58,6 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     //Welcome Message
+    var cards;
+    var flag = 0;
     final welcomeMessage = Padding(
       padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
       child: Text(
@@ -84,6 +87,9 @@ class _HomeScreenState extends State<HomeScreen> {
       onChanged: (String? newValue) {
         setState(() {
           SelectedvalueInYear = newValue!;
+          cards = Text("HO");
+          print("at cards temp date..");
+          flag = 1;
         });
       },
     );
@@ -189,12 +195,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    final cards = StreamBuilder(
+    cards = StreamBuilder(
       stream: _transaction.snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
         //docs refers to rows in table(collection)
         chartData.clear();
-        if (streamSnapshot.hasData) {
+        print("at cards main...");
+        if (streamSnapshot.hasData && flag == 0) {
           return ListView.builder(
             shrinkWrap: true,
             itemCount: streamSnapshot.data!.docs.length,
@@ -248,9 +255,11 @@ class _HomeScreenState extends State<HomeScreen> {
     void SelectedItem(BuildContext context, item) {
       switch (item) {
         case 0:
-          print("Settings");
-          // Navigator.of(context)
-          //     .push(MaterialPageRoute(builder: (context) => SettingPage()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => UserProfile()),
+          );
           break;
         case 1:
           // print("Privacy Clicked");
