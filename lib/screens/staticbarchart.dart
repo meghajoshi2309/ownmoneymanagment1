@@ -1,55 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:ownmoneymanagment1/model/barchart_model.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class MyHomePage extends StatefulWidget {
   // ignore: prefer_const_constructors_in_immutables
-  MyHomePage({Key? key}) : super(key: key);
+  final List<BarChartData> chartListdata;
+  MyHomePage({Key? key, required this.chartListdata}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late List<_ChartData> data;
-  late TooltipBehavior _tooltip;
+  late List<BarChartData> data;
 
   @override
   void initState() {
-    data = [
-      _ChartData('CHN', 12),
-      _ChartData('GER', 15),
-      _ChartData('RUS', 30),
-      _ChartData('BRZ', 6.4),
-      _ChartData('IND', 14)
-    ];
-    _tooltip = TooltipBehavior(enable: true);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Syncfusion Flutter chart'),
-        ),
-        body: SfCartesianChart(
+      appBar: AppBar(title: const Text("Own Money Managment")),
+      body: Center(
+        child: Container(
+          // child: Row(
+          //   children: [
+          // SizedBox(width: 20),
+          child: SfCartesianChart(
+            legend: Legend(
+                isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
             primaryXAxis: CategoryAxis(),
-            primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
-            tooltipBehavior: _tooltip,
-            series: <ChartSeries<_ChartData, String>>[
-              BarSeries<_ChartData, String>(
-                  dataSource: data,
-                  xValueMapper: (_ChartData data, _) => data.x,
-                  yValueMapper: (_ChartData data, _) => data.y,
-                  name: 'Gold',
-                  color: Color.fromRGBO(8, 142, 255, 1))
-            ]));
+            series: <CartesianSeries>[
+              ColumnSeries<BarChartData, String>(
+                  yAxisName: "Income",
+                  dataLabelSettings: DataLabelSettings(isVisible: true),
+                  dataSource: widget.chartListdata,
+                  xValueMapper: (BarChartData data, _) => data.x,
+                  yValueMapper: (BarChartData data, _) => data.y),
+              ColumnSeries<BarChartData, String>(
+                  yAxisName: "Expance",
+                  dataLabelSettings: DataLabelSettings(isVisible: true),
+                  dataSource: widget.chartListdata,
+                  xValueMapper: (BarChartData data, _) => data.x,
+                  yValueMapper: (BarChartData data, _) => data.y1),
+              ColumnSeries<BarChartData, String>(
+                  yAxisName: "Total",
+                  dataLabelSettings: DataLabelSettings(isVisible: true),
+                  dataSource: widget.chartListdata,
+                  xValueMapper: (BarChartData data, _) => data.x,
+                  yValueMapper: (BarChartData data, _) => data.y2)
+            ],
+          ),
+          //   ],
+          // ),
+        ),
+      ),
+    );
   }
-}
-
-class _ChartData {
-  _ChartData(this.x, this.y);
-
-  final String x;
-  final double y;
 }

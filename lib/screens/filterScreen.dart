@@ -62,7 +62,7 @@ class _FilterScreenState extends State<FilterScreen> {
     if (widget.selectedType == "YearMode") {
       if (widget.selected == 'Current Date') {
         String cdate = DateFormat("yyyy-MM-dd").format(DateTime.now());
-        print(cdate);
+      
         chartData.retainWhere((countryone) {
           if (countryone.date == cdate) {
             return true;

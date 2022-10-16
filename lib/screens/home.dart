@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ownmoneymanagment1/model/user_model.dart';
 import 'package:ownmoneymanagment1/screens/filterScreen.dart';
 import 'package:ownmoneymanagment1/screens/login.dart';
 import 'package:ownmoneymanagment1/screens/profile.dart';
 import 'package:ownmoneymanagment1/screens/staticbarchart.dart';
+import '../model/barchart_model.dart';
 import '../model/chart_model.dart';
 import '../model/transaction_model.dart';
 import './expence.dart';
@@ -45,6 +47,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<ChartClassData> chartData = [];
   final List<ChartClassData> chartDataForIncome = [];
+  List<BarChartData> BarchartData = <BarChartData>[
+    BarChartData('Today', 0, 0, 0),
+    BarChartData('Pervios Day', 0, 0, 0),
+    BarChartData('2 Day Ago', 0, 0, 0),
+  ];
 
   @override
   void initState() {
@@ -62,6 +69,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     var cards;
+
+    // For Comapare date so define date
+    String currentdate = DateFormat("yyyy-MM-dd").format(DateTime.now());
+    DateTime previousdateindate = DateTime.now().subtract(Duration(days: 1));
+    String previousdate = DateFormat("yyyy-MM-dd").format(previousdateindate);
+    DateTime twosagodateindate = DateTime.now().subtract(Duration(days: 2));
+    String twosagodate = DateFormat("yyyy-MM-dd").format(twosagodateindate);
 
     //Welcome Message
     // final welcomeMessage = Padding(
@@ -276,6 +290,11 @@ class _HomeScreenState extends State<HomeScreen> {
         chartData.clear();
         listof.clear();
         chartDataForIncome.clear();
+        BarchartData = <BarChartData>[
+          BarChartData('Today', 0, 0, 0),
+          BarChartData('Pervios Day', 0, 0, 0),
+          BarChartData('2 Day AGO', 0, 0, 0),
+        ];
         print("at cards main...");
         if (streamSnapshot.hasData) {
           return ListView.builder(
@@ -301,10 +320,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     }
                   }
-                  if (flag == 0)
+                  if (flag == 0) {
                     chartData.add(ChartClassData(
                         documentSnapshot['category'].toString(),
                         documentSnapshot['amount']));
+                  }
                 }
 
                 if (documentSnapshot['transactiontype'] == 'Income') {
@@ -323,10 +343,83 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     }
                   }
-                  if (flag == 0)
+                  if (flag == 0) {
                     chartDataForIncome.add(ChartClassData(
                         documentSnapshot['category'].toString(),
                         documentSnapshot['amount']));
+                  }
+                }
+
+                if (documentSnapshot['date'] == currentdate) {
+                  if (documentSnapshot['transactiontype'] == 'Income') {
+                    int temp = BarchartData[0].y ?? 0;
+                    temp += int.parse(documentSnapshot['amount'].toString());
+                    BarchartData[0].y = temp;
+
+                    int tempoftotal = BarchartData[0].y2 ?? 0;
+                    tempoftotal +=
+                        int.parse(documentSnapshot['amount'].toString());
+                    BarchartData[0].y2 = tempoftotal;
+                  }
+
+                  if (documentSnapshot['transactiontype'] == 'Expence') {
+                    int temp = BarchartData[0].y1 ?? 0;
+                    temp += int.parse(documentSnapshot['amount'].toString());
+                    BarchartData[0].y1 = temp;
+
+                    int tempoftotal = BarchartData[0].y2 ?? 0;
+                    tempoftotal -=
+                        int.parse(documentSnapshot['amount'].toString());
+                    BarchartData[0].y2 = tempoftotal;
+                  }
+                }
+
+                if (documentSnapshot['date'] == previousdate) {
+                  if (documentSnapshot['transactiontype'] == 'Income') {
+                    int temp = BarchartData[0].y ?? 0;
+                    temp += int.parse(documentSnapshot['amount'].toString());
+                    BarchartData[0].y = temp;
+
+                    int tempoftotal = BarchartData[0].y2 ?? 0;
+                    tempoftotal +=
+                        int.parse(documentSnapshot['amount'].toString());
+                    BarchartData[0].y2 = tempoftotal;
+                  }
+
+                  if (documentSnapshot['transactiontype'] == 'Expence') {
+                    int temp = BarchartData[1].y1 ?? 0;
+                    temp += int.parse(documentSnapshot['amount'].toString());
+                    BarchartData[1].y1 = temp;
+
+                    int tempoftotal = BarchartData[1].y2 ?? 0;
+                    tempoftotal -=
+                        int.parse(documentSnapshot['amount'].toString());
+                    BarchartData[1].y2 = tempoftotal;
+                  }
+                }
+
+                if (documentSnapshot['date'] == twosagodate) {
+                  if (documentSnapshot['transactiontype'] == 'Income') {
+                    int temp = BarchartData[2].y ?? 0;
+                    temp += int.parse(documentSnapshot['amount'].toString());
+                    BarchartData[2].y = temp;
+
+                    int tempoftotal = BarchartData[2].y2 ?? 0;
+                    tempoftotal +=
+                        int.parse(documentSnapshot['amount'].toString());
+                    BarchartData[2].y2 = tempoftotal;
+                  }
+
+                  if (documentSnapshot['transactiontype'] == 'Expence') {
+                    int temp = BarchartData[0].y1 ?? 0;
+                    temp += int.parse(documentSnapshot['amount'].toString());
+                    BarchartData[0].y1 = temp;
+
+                    int tempoftotal = BarchartData[0].y2 ?? 0;
+                    tempoftotal -=
+                        int.parse(documentSnapshot['amount'].toString());
+                    BarchartData[0].y2 = tempoftotal;
+                  }
                 }
 
                 TransactionModel temp = TransactionModel(
@@ -337,8 +430,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     category: documentSnapshot['category'],
                     paymentmode: documentSnapshot['paymentmode'],
                     transactiontype: documentSnapshot['transactiontype']);
-
                 listof.add(temp);
+
                 return Container(
                   child: Card(
                     color: Colors.white,
@@ -396,7 +489,8 @@ class _HomeScreenState extends State<HomeScreen> {
         case 4:
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MyHomePage()),
+            MaterialPageRoute(
+                builder: (context) => MyHomePage(chartListdata: BarchartData)),
           );
           break;
       }
