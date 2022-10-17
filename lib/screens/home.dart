@@ -71,6 +71,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //var setNotification;
+
+    final setNotification = AlertDialog(
+        title: Text('Alert!!'),
+        content: Text("Your Total Balance Is Going Out Of Range."),
+        actions: [
+          new FlatButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            textColor: Theme.of(context).primaryColor,
+            child: const Text('Close'),
+          ),
+        ]);
+
     var cards;
     int i;
 
@@ -80,6 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String previousdate = DateFormat("yyyy-MM-dd").format(previousdateindate);
     DateTime twosagodateindate = DateTime.now().subtract(Duration(days: 2));
     String twosagodate = DateFormat("yyyy-MM-dd").format(twosagodateindate);
+    // print(twosagodate);
 
     //Welcome Message
     // final welcomeMessage = Padding(
@@ -118,9 +134,10 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) => FilterScreen(
-                    listof: listof,
-                    selected: SelectedvalueInYear,
-                    selectedType: "YearMode")),
+                      listof: listof,
+                      selected: SelectedvalueInYear,
+                      selectedType: "YearMode",
+                    )),
           );
         });
       },
@@ -148,9 +165,10 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) => FilterScreen(
-                    listof: listof,
-                    selected: SelectedvalueInPaymentMode,
-                    selectedType: 'PaymentMode')),
+                      listof: listof,
+                      selected: SelectedvalueInPaymentMode,
+                      selectedType: 'PaymentMode',
+                    )),
           );
         });
       },
@@ -195,9 +213,10 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) => FilterScreen(
-                    listof: listof,
-                    selected: SelectedvalueInCategoryMode,
-                    selectedType: "CategoryMode")),
+                      listof: listof,
+                      selected: SelectedvalueInCategoryMode,
+                      selectedType: "CategoryMode",
+                    )),
           );
         });
       },
@@ -225,9 +244,10 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) => FilterScreen(
-                    listof: listof,
-                    selected: SelectedvalueIEMode,
-                    selectedType: 'EntryTypeMode')),
+                      listof: listof,
+                      selected: SelectedvalueIEMode,
+                      selectedType: 'EntryTypeMode',
+                    )),
           );
         });
       },
@@ -409,14 +429,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 if (documentSnapshot['date'] == previousdate) {
                   if (documentSnapshot['transactiontype'] == 'Income') {
-                    int temp = BarchartData[0].y ?? 0;
+                    int temp = BarchartData[1].y ?? 0;
                     temp += int.parse(documentSnapshot['amount'].toString());
-                    BarchartData[0].y = temp;
+                    BarchartData[1].y = temp;
 
-                    int tempoftotal = BarchartData[0].y2 ?? 0;
+                    int tempoftotal = BarchartData[1].y2 ?? 0;
                     tempoftotal +=
                         int.parse(documentSnapshot['amount'].toString());
-                    BarchartData[0].y2 = tempoftotal;
+                    BarchartData[1].y2 = tempoftotal;
                   }
 
                   if (documentSnapshot['transactiontype'] == 'Expence') {
@@ -444,14 +464,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
 
                   if (documentSnapshot['transactiontype'] == 'Expence') {
-                    int temp = BarchartData[0].y1 ?? 0;
+                    int temp = BarchartData[2].y1 ?? 0;
                     temp += int.parse(documentSnapshot['amount'].toString());
-                    BarchartData[0].y1 = temp;
+                    BarchartData[2].y1 = temp;
 
-                    int tempoftotal = BarchartData[0].y2 ?? 0;
+                    int tempoftotal = BarchartData[2].y2 ?? 0;
                     tempoftotal -=
                         int.parse(documentSnapshot['amount'].toString());
-                    BarchartData[0].y2 = tempoftotal;
+                    BarchartData[2].y2 = tempoftotal;
                   }
                 }
 
@@ -466,7 +486,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 listof.add(temp);
 
                 return Container(
-                  child: Card(
+                  child: GestureDetector(
+                    onTap: () => {showDetails(index)},
+                    child: Card(
                       color: Colors.white,
                       elevation: 5,
                       margin: const EdgeInsets.all(10),
@@ -481,7 +503,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     documentSnapshot['category'].toString(),
                                     style: TextStyle(fontSize: 16)),
                                 onPressed: () {
-                                  /* ... */
                                   showDetails(index);
                                 },
                               ),
@@ -490,33 +511,46 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Text(
                                     documentSnapshot['amount'].toString(),
                                     style: TextStyle(fontSize: 16)),
-                                onPressed: () {/* ... */},
+                                onPressed: () {
+                                  showDetails(index);
+                                },
                               ),
                               // const SizedBox(width: 8),
                             ],
                           ),
                           Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            // mainAxisAlignment: MainAxisAlignment.spaceAround,
                             // crossAxisAlignment: CrossAxisAlignment.start,
+                            // mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 2, 5, 4),
+                              // Padding(
+                              //   padding: const EdgeInsets.fromLTRB(10, 2, 5, 4),
+                              // ),
+                              Text(
+                                "Tranction Type : ${documentSnapshot['transactiontype']}",
                               ),
                               Text(
-                                  "Tranction Type : ${documentSnapshot['transactiontype']}"),
-                              Text(
-                                  "Payment Mode : ${documentSnapshot['paymentmode']}"),
+                                "Payment Mode : ${documentSnapshot['paymentmode']}",
+                              ),
+
                               Divider(
                                 color: Color.fromARGB(255, 201, 201, 201),
                               ),
-                              Text(documentSnapshot['date'].toString(),
-                                  style: TextStyle(
-                                      color:
-                                          Color.fromARGB(255, 115, 105, 105))),
+                              TextButton(
+                                child: Text(documentSnapshot['date'].toString(),
+                                    style: TextStyle(
+                                        color: Color.fromARGB(
+                                            255, 115, 105, 105))),
+                                onPressed: () {
+                                  showDetails(index);
+                                },
+                              ),
                             ],
                           )
                         ],
-                      )),
+                      ),
+                    ),
+                  ),
                 );
               } else {
                 return SizedBox(height: 0);
@@ -625,8 +659,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Padding(
               padding: const EdgeInsets.all(36.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                // mainAxisAlignment: MainAxisAlignment.center,
+                // crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   const SizedBox(
                     height: 0,
@@ -654,6 +688,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       children: <Widget>[
                         netBalanceCard,
+                        if (widget.total <= 100)
+                          AlertDialog(
+                            // insetPadding : const EdgeInsets.all()
+                            backgroundColor: Colors.red,
+                            title: Text(
+                                'Alert!! Your Total Balance Is Going Out Of Range.',
+                                style: TextStyle(fontSize: 13)),
+                            //   content: Text("Your Total Balance Is Going Out Of Range.",
+                            //       style: TextStyle(fontSize: 10)),
+                          ),
                         cards,
                         SizedBox(
                           height: 40,
@@ -798,4 +842,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
+
+//   Widget showNotification(BuildContext context) {
+//    return
+
+//   //   return
+//   // }
 }

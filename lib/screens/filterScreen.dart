@@ -3,18 +3,20 @@
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
+import 'package:ownmoneymanagment1/screens/viewcard.dart';
 import '../model/transaction_model.dart';
 
 class FilterScreen extends StatefulWidget {
   final List<TransactionModel> listof;
   final String selected;
   final String selectedType;
-  const FilterScreen(
-      {Key? key,
-      required this.listof,
-      required this.selected,
-      required this.selectedType})
-      : super(key: key);
+
+  const FilterScreen({
+    Key? key,
+    required this.listof,
+    required this.selected,
+    required this.selectedType,
+  }) : super(key: key);
 
   @override
   State<FilterScreen> createState() => _FilterScreenState();
@@ -123,56 +125,64 @@ class _FilterScreenState extends State<FilterScreen> {
     var listDiplay;
 
     listDiplay = ListView.builder(
-        shrinkWrap: true,
-        itemCount: chartData.length,
-        itemBuilder: (BuildContext ctxt, int index) {
-          return Container(
-            child: Card(
-                color: Colors.white,
-                elevation: 5,
-                margin: const EdgeInsets.all(10),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+      shrinkWrap: true,
+      itemCount: chartData.length,
+      itemBuilder: (BuildContext ctxt, int index) {
+        return Container(
+          child: Card(
+            color: Colors.white,
+            elevation: 5,
+            margin: const EdgeInsets.all(10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        TextButton(
-                          child: Text(chartData[index].category.toString(),
-                              style: TextStyle(fontSize: 16)),
-                          onPressed: () {/* ... */},
-                        ),
-                        const SizedBox(width: 8),
-                        TextButton(
-                          child: Text(chartData[index].amount.toString(),
-                              style: TextStyle(fontSize: 16)),
-                          onPressed: () {/* ... */},
-                        ),
-                        // const SizedBox(width: 8),
-                      ],
+                    TextButton(
+                      child: Text(chartData[index].category.toString(),
+                          style: TextStyle(fontSize: 16)),
+                      onPressed: () {/* ... */},
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      // crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 2, 5, 4),
-                        ),
-                        Text(
-                            "Tranction Type : ${chartData[index].transactiontype}"),
-                        Text("Payment Mode : ${chartData[index].paymentmode}"),
-                        Divider(
-                          color: Color.fromARGB(255, 201, 201, 201),
-                        ),
-                        Text(chartData[index].date.toString(),
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 115, 105, 105))),
-                      ],
-                    )
+                    const SizedBox(width: 8),
+                    TextButton(
+                      child: Text(chartData[index].amount.toString(),
+                          style: TextStyle(fontSize: 16)),
+                      onPressed: () {/* ... */},
+                    ),
+                    // const SizedBox(width: 8),
                   ],
-                )),
-          );
-        });
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 2, 5, 4),
+                    ),
+                    Text(
+                        "Tranction Type : ${chartData[index].transactiontype}"),
+                    Text("Payment Mode : ${chartData[index].paymentmode}"),
+                    Divider(
+                      color: Color.fromARGB(255, 201, 201, 201),
+                    ),
+                    TextButton(
+                      child: Text(
+                        chartData[index].date.toString(),
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 115, 105, 105),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
 
     if (chartData.length == 0) {
       listDiplay = Container(

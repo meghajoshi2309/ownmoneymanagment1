@@ -84,7 +84,26 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
         //this is for setting length of login button equal to the length of input field
         minWidth: MediaQuery.of(context).size.width,
         onPressed: () {
-          deleteTransaction(widget.model.tid.toString());
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              // title: Text(''),
+              content: Text('Are You Sure For Delete This Transaction?'),
+              actions: [
+                TextButton(
+                  child: Text('Cancel'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                TextButton(
+                  child: Text('Delete'),
+                  onPressed: () => deleteTransaction(
+                    widget.model.tid.toString(),
+                  ),
+                ),
+              ],
+            ),
+          );
+          //deleteTransaction(widget.model.tid.toString());
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
