@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
+import 'package:ownmoneymanagment1/model/user_model.dart';
 import 'package:ownmoneymanagment1/screens/home.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class netBalance extends StatefulWidget {
   const netBalance({Key? key}) : super(key: key);
@@ -13,12 +15,29 @@ class netBalance extends StatefulWidget {
 }
 
 class _netBalanceState extends State<netBalance> {
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel loggedInUser = UserModel();
+  var name;
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection("user")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      loggedInUser = UserModel.fromMap(value.data());
+      setState(() {
+        name = loggedInUser.username;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final CollectionReference _transaction =
         FirebaseFirestore.instance.collection('transaction');
-
-    User? user = FirebaseAuth.instance.currentUser;
 
     num expence = 10;
     num income = 10;
@@ -28,15 +47,25 @@ class _netBalanceState extends State<netBalance> {
     return Scaffold(
       body: Container(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconButton(
-              icon: Icon(
-                Icons.mail_outline_sharp,
-                size: 30.0,
-              ),
-              tooltip: 'send mail me',
-              onPressed: () {
-                print('on console print');
+            SizedBox(height: 100),
+            Container(
+              child: _textLiquidFillAnimation(),
+            ),
+            SizedBox(height: 10),
+            AnimatedTextKit(
+              isRepeatingAnimation: false,
+              animatedTexts: [
+                TyperAnimatedText('Keep Track Of Your Transication With Us.',
+                    textStyle: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        backgroundColor: Colors.white)),
+              ],
+              onTap: () {
+                print("I am executing");
               },
             ),
             StreamBuilder(
@@ -85,10 +114,10 @@ class _netBalanceState extends State<netBalance> {
             ),
             FlatButton(
               child: Text(
-                'Skip',
+                'Skip >>',
                 style: TextStyle(fontSize: 20.0),
               ),
-              color: Colors.blueAccent,
+              color: Colors.purple,
               textColor: Colors.white,
               onPressed: () {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -97,6 +126,23 @@ class _netBalanceState extends State<netBalance> {
               },
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _textLiquidFillAnimation() {
+    return SizedBox(
+      child: Center(
+        child: TextLiquidFill(
+          text: 'Hello ${loggedInUser.username}',
+          waveDuration: Duration(seconds: 2),
+          waveColor: Colors.purple,
+          boxBackgroundColor: Colors.white,
+          textStyle: TextStyle(
+            fontSize: 50.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

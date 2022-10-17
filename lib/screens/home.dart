@@ -7,6 +7,7 @@ import 'package:ownmoneymanagment1/screens/filterScreen.dart';
 import 'package:ownmoneymanagment1/screens/login.dart';
 import 'package:ownmoneymanagment1/screens/profile.dart';
 import 'package:ownmoneymanagment1/screens/staticbarchart.dart';
+import 'package:ownmoneymanagment1/screens/viewcard.dart';
 import '../model/barchart_model.dart';
 import '../model/chart_model.dart';
 import '../model/transaction_model.dart';
@@ -69,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     var cards;
+    int i;
 
     // For Comapare date so define date
     String currentdate = DateFormat("yyyy-MM-dd").format(DateTime.now());
@@ -286,6 +288,14 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
+    void showDetails(int index) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TransactionDetailsScreen(model: index)),
+      );
+    }
+
     cards = StreamBuilder(
       stream: _transaction.snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
@@ -306,6 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               final DocumentSnapshot documentSnapshot =
                   streamSnapshot.data!.docs[index];
+              i = index;
               if (documentSnapshot['uid'] == user!.uid) {
                 //Adding Data in chartData List For Making Chart Of Expence In Chart.dart
                 if (documentSnapshot['transactiontype'] == 'Expence') {
@@ -450,7 +461,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Text(
                                     documentSnapshot['category'].toString(),
                                     style: TextStyle(fontSize: 16)),
-                                onPressed: () {/* ... */},
+                                onPressed: () {
+                                  /* ... */
+                                  showDetails(i);
+                                },
                               ),
                               const SizedBox(width: 8),
                               TextButton(
@@ -616,7 +630,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     scrollDirection: Axis.vertical,
                     child: Column(
                       children: <Widget>[
-                        netBalanceCard,
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: netBalanceCard,
+                        ),
                         cards,
                         SizedBox(
                           height: 40,
