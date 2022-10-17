@@ -8,6 +8,7 @@ import 'package:ownmoneymanagment1/screens/login.dart';
 import 'package:ownmoneymanagment1/screens/profile.dart';
 import 'package:ownmoneymanagment1/screens/staticbarchart.dart';
 import 'package:ownmoneymanagment1/screens/viewcard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../model/barchart_model.dart';
 import '../model/chart_model.dart';
 import '../model/transaction_model.dart';
@@ -41,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final _auth = FirebaseAuth.instance;
   List<TransactionModel> listof = [];
+  List<TransactionModel> allDataListOfTransactionCollection = [];
 
   //we can accsess table(collection) transaction using _transaction instance
   final CollectionReference _transaction =
@@ -232,58 +234,61 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     //netBalanceCard
-    final netBalanceCard = Container(
-      //giving 90% of all the width
-      width: MediaQuery.of(context).size.width * 0.9,
-      margin: const EdgeInsets.all(12.0),
+    final netBalanceCard = Align(
+      alignment: Alignment.bottomLeft,
       child: Container(
-        decoration: const BoxDecoration(
-          // color: Color.fromARGB(255, 207, 121, 222),
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [
-              Color.fromARGB(255, 190, 80, 209),
-              Color.fromARGB(255, 95, 2, 111),
+        //giving 90% of all the width
+        width: MediaQuery.of(context).size.width * 0.9,
+        margin: const EdgeInsets.all(12.0),
+        child: Container(
+          decoration: const BoxDecoration(
+            // color: Color.fromARGB(255, 207, 121, 222),
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [
+                Color.fromARGB(255, 190, 80, 209),
+                Color.fromARGB(255, 95, 2, 111),
+              ],
+            ),
+            borderRadius: BorderRadius.all(
+              //elevation: 12,
+              Radius.circular(24.0),
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(
+            vertical: 20.0,
+            horizontal: 8.0,
+          ),
+          child: Column(
+            children: [
+              const Text(
+                "Total Balance",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 22.0, color: Colors.white),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                widget.total.toString(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontSize: 22.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    cardIncome(widget.income.toString()),
+                    cardExpence(widget.expence.toString()),
+                  ],
+                ),
+              ),
             ],
           ),
-          borderRadius: BorderRadius.all(
-            //elevation: 12,
-            Radius.circular(24.0),
-          ),
-        ),
-        padding: const EdgeInsets.symmetric(
-          vertical: 20.0,
-          horizontal: 8.0,
-        ),
-        child: Column(
-          children: [
-            const Text(
-              "Total Balance",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 22.0, color: Colors.white),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              widget.total.toString(),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  fontSize: 22.0,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  cardIncome(widget.income.toString()),
-                  cardExpence(widget.expence.toString()),
-                ],
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -292,7 +297,11 @@ class _HomeScreenState extends State<HomeScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => TransactionDetailsScreen(model: index)),
+            builder: (context) => TransactionDetailsScreen(
+                model: allDataListOfTransactionCollection[index],
+                income: widget.income,
+                expence: widget.expence,
+                total: widget.total)),
       );
     }
 
@@ -302,6 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
         //docs refers to rows in table(collection)
         chartData.clear();
         listof.clear();
+        allDataListOfTransactionCollection.clear();
         chartDataForIncome.clear();
         BarchartData = <BarChartData>[
           BarChartData('Today', 0, 0, 0),
@@ -316,7 +326,16 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               final DocumentSnapshot documentSnapshot =
                   streamSnapshot.data!.docs[index];
-              i = index;
+
+              TransactionModel tempAddTransactionModel = TransactionModel(
+                  uid: user!.uid,
+                  tid: documentSnapshot['tid'],
+                  amount: documentSnapshot['amount'],
+                  date: documentSnapshot['date'],
+                  category: documentSnapshot['category'],
+                  paymentmode: documentSnapshot['paymentmode'],
+                  transactiontype: documentSnapshot['transactiontype']);
+              allDataListOfTransactionCollection.add(tempAddTransactionModel);
               if (documentSnapshot['uid'] == user!.uid) {
                 //Adding Data in chartData List For Making Chart Of Expence In Chart.dart
                 if (documentSnapshot['transactiontype'] == 'Expence') {
@@ -463,7 +482,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     style: TextStyle(fontSize: 16)),
                                 onPressed: () {
                                   /* ... */
-                                  showDetails(i);
+                                  showDetails(index);
                                 },
                               ),
                               const SizedBox(width: 8),
@@ -528,7 +547,11 @@ class _HomeScreenState extends State<HomeScreen> {
           );
           break;
         case 2:
-          _auth.signOut();
+          () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.remove('email');
+          }();
+          // _auth.signOut();
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const LoginScreen()));
           break;
@@ -630,10 +653,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     scrollDirection: Axis.vertical,
                     child: Column(
                       children: <Widget>[
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: netBalanceCard,
-                        ),
+                        netBalanceCard,
                         cards,
                         SizedBox(
                           height: 40,

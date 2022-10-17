@@ -34,19 +34,19 @@ class _MyHomePageState extends State<MyHomePage> {
             primaryXAxis: CategoryAxis(),
             series: <CartesianSeries>[
               ColumnSeries<BarChartData, String>(
-                  yAxisName: "Income",
+                  name: "Income",
                   dataLabelSettings: DataLabelSettings(isVisible: true),
                   dataSource: widget.chartListdata,
                   xValueMapper: (BarChartData data, _) => data.x,
                   yValueMapper: (BarChartData data, _) => data.y),
               ColumnSeries<BarChartData, String>(
-                  yAxisName: "Expance",
+                  name: "Expance",
                   dataLabelSettings: DataLabelSettings(isVisible: true),
                   dataSource: widget.chartListdata,
                   xValueMapper: (BarChartData data, _) => data.x,
                   yValueMapper: (BarChartData data, _) => data.y1),
               ColumnSeries<BarChartData, String>(
-                  yAxisName: "Total",
+                  name: "Total",
                   dataLabelSettings: DataLabelSettings(isVisible: true),
                   dataSource: widget.chartListdata,
                   xValueMapper: (BarChartData data, _) => data.x,

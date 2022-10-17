@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ownmoneymanagment1/screens/calculationofnetbalence.dart';
 import 'package:ownmoneymanagment1/screens/registration.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './registration.dart';
 import './home.dart';
 
@@ -179,12 +180,15 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formkey.currentState!.validate()) {
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
-          .then((uid) => {
-                Fluttertoast.showToast(msg: "Login Successful"),
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => const netBalance())),
-              })
-          .catchError((e) {
+          .then((uid) async {
+        //new
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('email', email);
+
+        Fluttertoast.showToast(msg: "Login Successful");
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const netBalance()));
+      }).catchError((e) {
         Fluttertoast.showToast(msg: e!.message);
       });
     }

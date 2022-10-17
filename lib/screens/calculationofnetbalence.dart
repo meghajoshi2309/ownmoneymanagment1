@@ -54,7 +54,7 @@ class _netBalanceState extends State<netBalance> {
             Container(
               child: _textLiquidFillAnimation(),
             ),
-            SizedBox(height: 10),
+            // SizedBox(height: 10),
             AnimatedTextKit(
               isRepeatingAnimation: false,
               animatedTexts: [
